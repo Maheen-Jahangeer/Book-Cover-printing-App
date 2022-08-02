@@ -1,9 +1,20 @@
-import {View, Text, StyleSheet, Image, Pressable} from 'react-native';
-import {Ionicons} from '@expo/vector-icons';
-import {TextInput} from 'react-native-paper'
+// import {useContext} from 'react';
+import { useContext } from 'react';
+import { View, Text, StyleSheet, Image, Pressable } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+import { ActivityIndicator, TextInput } from 'react-native-paper'
 import AuthButton from '../components/AuthButton';
+import {AuthContext} from '../context/AuthContext';
 
-const LoginScreen = () => {
+const LoginScreen = ({ navigation }) => {
+    const registerButtonHandler = () => {
+        navigation.navigate('Register')
+    }
+    const {loginHandler} = useContext(AuthContext)
+    const loginButtonHandler = () => {
+        loginHandler();
+        navigation.navigate('Home');
+    }
     return (
         <View style={styles.container}>
             <View style={styles.imageContainer}>
@@ -12,87 +23,97 @@ const LoginScreen = () => {
             <View style={styles.textContainer}>
                 <Text style={styles.title}>Login</Text>
                 <View style={styles.inputContainer}>
-                <Ionicons name='mail' size={32} style={styles.inputIcon}/>
-                <TextInput mode='flat' placeholder='Email ID' style={styles.input}/>
+                    <Ionicons name='mail' size={32} style={styles.inputIcon} />
+                    <TextInput mode='flat' placeholder='Email ID' style={styles.input} />
                 </View>
                 <View style={styles.inputContainer}>
-                <Ionicons name='lock-closed' size={32} style={styles.inputIcon}/>
-                <TextInput mode='flat' placeholder='Email ID' right={<TextInput.Icon name="eye" />} style={styles.input} secureTextEntry/>
+                    <Ionicons name='lock-closed' size={32} style={styles.inputIcon} />
+                    <TextInput mode='flat' placeholder='Email ID' right={<TextInput.Icon name="eye" />} style={styles.input} secureTextEntry />
                 </View>
             </View>
-            <View style={styles.forgetContainer}>
+            <View style={styles.forget}>
                 <Pressable>
                     <Text style={styles.forget} >Forget Password ?</Text>
                 </Pressable>
             </View>
             <View>
-                <AuthButton buttonLabel="Login" buttonStyle={styles.button} />
+                <AuthButton buttonLabel="Login" buttonStyle={styles.button} onPress={loginButtonHandler} />
             </View>
             <View style={styles.newLogoutContainer}>
-                <Text style={styles.newLogoutTitle}>New to Books app? <Text style={styles.newLogoutLink}>Register</Text> </Text>
+                <Text style={styles.newLogoutTitle}>New to Books app?</Text>
+                <Pressable onPress={registerButtonHandler}>
+                    <Text style={styles.newLogoutLink}>Register</Text> 
+                    </Pressable>
             </View>
         </View>
     )
 }
 
 const styles = StyleSheet.create({
-    container:{
-        flex:1,
+    container: {
+        flex: 1,
+        justifyContent: 'center',
+        margin: 20
+    },
+    imageContainer: {
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    image: {
+        width: 200,
+        height: 200,
+    },
+    textContainer: {
+        justifyContent: 'flex-start',
+        alignItems: 'center'
+    },
+    title: {
+        fontSize: 35,
+        fontWeight: 'bold',
+        marginBottom: 20
+    },
+    inputContainer: {
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginTop: 10,
+        marginBottom: 10
+    },
+    inputIcon: {
+        marginRight: 10
+    },
+    input: {
+        width: '80%'
+    },
+    forget: {
+        color: 'blue',
+        textAlign: 'right',
+        marginRight: 20,
+        marginTop: 10
+    },
+    newLogoutContainer: {
+        alignContent: 'center',
         justifyContent:'center',
-        margin:20
-        // alignItems:"center"
+        marginTop: '10%',
+        flexDirection:'row'
     },
-    imageContainer:{
-        justifyContent:'center',
-        alignItems:'center'
-    },
-    image:{
-        width:200,
-        height:200,
-    },
-    textContainer:{
-        justifyContent:'flex-start',
-        alignItems:'center'
-    },
-    title:{
-        fontSize:35,
-        fontWeight:'bold',
-        marginBottom:20
-    },
-    inputContainer:{
-        flexDirection:'row',
-        justifyContent:'center',
-        alignItems:'center',
-        marginTop:10,
+    newLogoutTitle: {
+        color: '#D6D5D4',
+        fontSize: 16,
         marginBottom:10
     },
-    inputIcon:{
-        marginRight:10
+    newLogoutLink: {
+        color: 'blue',
+        fontSize: 16,
+        marginBottom:9,
+        marginLeft:3
     },
-    input:{
-        width:'80%'
+    button: {
+        marginTop: 20,
+        marginLeft: '5%'
     },
-    forget:{
-        color:'blue',
-        textAlign:'right',
-        marginRight:20,
+    pressable:{
         marginTop:10
-    },
-    newLogoutContainer:{
-        alignItems:'center',
-        marginTop:'10%'
-    },
-    newLogoutTitle:{
-        color:'#D6D5D4',
-        fontSize:16
-    },
-    newLogoutLink:{
-        color:'blue',
-        fontSize:16
-    },
-    button:{
-        marginTop:20,
-        marginLeft:'5%'   
     }
 })
 

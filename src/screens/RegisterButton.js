@@ -3,7 +3,10 @@ import {TextInput} from 'react-native-paper';
 import { View, Text, Image, StyleSheet } from 'react-native';
 import AuthButton from '../components/AuthButton';
 
-const RegisterScreen = () => {
+const RegisterScreen = ({navigation}) => {
+    const loginHandler = () => {
+        navigation.navigate('Login')
+    }
     return (
         <View style={styles.container}>
             <View style={styles.imageContainer}>
@@ -21,7 +24,7 @@ const RegisterScreen = () => {
                 </View>
                 <View style={styles.inputContainer}>
                     <Ionicons name='lock-closed' size={32} style={styles.inputIcon}/>
-                    <TextInput mode='flat' placeholder='Password' style={styles.input} />
+                    <TextInput mode='flat' placeholder='Password' style={styles.input} right={<TextInput.Icon name="eye" />} />
                 </View>
                 </View>
                 <View style={styles.buttoncotainer}>
@@ -29,7 +32,7 @@ const RegisterScreen = () => {
                     <AuthButton buttonLabel="Continue" buttonStyle={styles.button} />
                 </View>
                 <View style={styles.newLogoutContainer}>
-                <Text style={styles.newLogoutTitle}>Joined us before? <Text style={styles.newLogoutLink}>Login</Text> </Text>
+                <Text style={styles.newLogoutTitle}>Joined us before? <Text onPress={loginHandler} style={styles.newLogoutLink}>Login</Text> </Text>
             </View>
         </View>
     )
