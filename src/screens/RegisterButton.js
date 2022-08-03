@@ -1,11 +1,30 @@
 import { Ionicons } from '@expo/vector-icons';
 import {TextInput} from 'react-native-paper';
 import { View, Text, Image, StyleSheet } from 'react-native';
+import axios from 'axios';
 import AuthButton from '../components/AuthButton';
+import { useState } from 'react';
 
 const RegisterScreen = ({navigation}) => {
+    const [userData, setUserData] = useState({
+        username:"",
+        email:"",
+        password:""
+    });
+
+    const registerHandler = async () => {
+      await axios.post('http://192.168.0.101:3200/auth/register',{
+        username:userData.username,
+        email:userData.email,
+        password:userData.password
+       }).then((response)=> {
+        console.log(`Registration successfull with response ${JSON.stringify(response)}`)
+        navigation.replace("Home")
+       }).catch(err => console.log("Failed", err))
+    }
+
     const loginHandler = () => {
-        navigation.navigate('Login')
+        console.log("Login handler")
     }
     return (
         <View style={styles.container}>
@@ -16,20 +35,21 @@ const RegisterScreen = ({navigation}) => {
                 <Text style={styles.title}>Register</Text>
                 <View style={styles.inputContainer}>
                     <Ionicons name='mail' size={32} style={styles.inputIcon}/>
-                    <TextInput mode='flat' placeholder='Email ID' style={styles.input} />
+                    <TextInput mode='flat' placeholder='Email ID' style={styles.input} onChangeText={(text) => setUserData({...userData, email:text})}/>
                 </View>
                 <View style={styles.inputContainer}>
                     <Ionicons name='people' size={32} style={styles.inputIcon}/>
-                    <TextInput mode='flat' placeholder='User name' style={styles.input} />
+                    <TextInput mode='flat' placeholder='User name' style={styles.input} onChangeText={(text) =>{
+                        setUserData({...userData, username:text})}} />
                 </View>
                 <View style={styles.inputContainer}>
                     <Ionicons name='lock-closed' size={32} style={styles.inputIcon}/>
-                    <TextInput mode='flat' placeholder='Password' style={styles.input} right={<TextInput.Icon name="eye" />} />
+                    <TextInput mode='flat' placeholder='Password' style={styles.input} secureTextEntry right={<TextInput.Icon name="eye" />} onChangeText={(text) => setUserData({...userData, password:text})}  />
                 </View>
                 </View>
                 <View style={styles.buttoncotainer}>
                     <Text style={styles.agreement}>By signing up, you're agree to our <Text style={styles.terms}>Terms and Conditions</Text>and <Text style={styles.terms}>Privacy Policies</Text></Text>
-                    <AuthButton buttonLabel="Continue" buttonStyle={styles.button} />
+                    <AuthButton buttonLabel="Register" buttonStyle={styles.button} onPress={registerHandler} />
                 </View>
                 <View style={styles.newLogoutContainer}>
                 <Text style={styles.newLogoutTitle}>Joined us before? <Text onPress={loginHandler} style={styles.newLogoutLink}>Login</Text> </Text>

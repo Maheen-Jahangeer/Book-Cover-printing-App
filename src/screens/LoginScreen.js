@@ -1,20 +1,32 @@
 // import {useContext} from 'react';
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { View, Text, StyleSheet, Image, Pressable } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { ActivityIndicator, TextInput } from 'react-native-paper'
 import AuthButton from '../components/AuthButton';
 import {AuthContext} from '../context/AuthContext';
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const LoginScreen = ({ navigation }) => {
+    const [userData, setUserData] = useState({
+        email:"",
+        password:""
+    });
+
     const registerButtonHandler = () => {
         navigation.navigate('Register')
     }
-    const {loginHandler} = useContext(AuthContext)
-    const loginButtonHandler = () => {
-        loginHandler();
-        navigation.navigate('Home');
+    
+    const loginHandler = async() => {
+        await axios.post('http://192.168.0.101:3200/auth/login',{
+            email:userData.email,
+            password:userData.password
+        }).then((response) => {
+            AsyncStorage.setItem("AccessToken", response.token)
+        }).catch(err => console.log("Failed", err))
     }
+    
     return (
         <View style={styles.container}>
             <View style={styles.imageContainer}>
@@ -24,11 +36,11 @@ const LoginScreen = ({ navigation }) => {
                 <Text style={styles.title}>Login</Text>
                 <View style={styles.inputContainer}>
                     <Ionicons name='mail' size={32} style={styles.inputIcon} />
-                    <TextInput mode='flat' placeholder='Email ID' style={styles.input} />
+                    <TextInput mode='flat' placeholder='Email ID' style={styles.input} onChangeText={text => setUserData({...userData, email:text})} />
                 </View>
                 <View style={styles.inputContainer}>
                     <Ionicons name='lock-closed' size={32} style={styles.inputIcon} />
-                    <TextInput mode='flat' placeholder='Email ID' right={<TextInput.Icon name="eye" />} style={styles.input} secureTextEntry />
+                    <TextInput mode='flat' placeholder='Email ID' right={<TextInput.Icon name="eye" />} style={styles.input} secureTextEntry onChangeText={text => setUserData({...userData,password:text})}/>
                 </View>
             </View>
             <View style={styles.forget}>
@@ -37,7 +49,7 @@ const LoginScreen = ({ navigation }) => {
                 </Pressable>
             </View>
             <View>
-                <AuthButton buttonLabel="Login" buttonStyle={styles.button} onPress={loginButtonHandler} />
+                <AuthButton buttonLabel="Login" buttonStyle={styles.button} onPress={loginHandler} />
             </View>
             <View style={styles.newLogoutContainer}>
                 <Text style={styles.newLogoutTitle}>New to Books app?</Text>

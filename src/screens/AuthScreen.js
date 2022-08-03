@@ -4,7 +4,7 @@ import {constants} from '../styles/index';
 
 const AuthScreen = ({navigation}) => {
     const onPressHandler = () => {
-        navigation.navigate('Login')
+        navigation.replace("Login")
     }
     return(
         <View style={styles.container}>

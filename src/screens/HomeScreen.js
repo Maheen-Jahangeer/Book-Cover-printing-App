@@ -7,7 +7,7 @@ import { AuthContext } from "../context/AuthContext";
 import AuthScreen from "./AuthScreen";
 import AuthButton from "../components/AuthButton";
 
-const AppScreen = ({buttonHandler}) => {
+export const HomeScreen = ({buttonHandler}) => {
     return (
         <View style={styles.container}>
             <Header />
@@ -16,22 +16,6 @@ const AppScreen = ({buttonHandler}) => {
         </View>
     )}
 
-export const HomeScreen = () => {
-    const {userToken, logoutHandler} = useContext(AuthContext);
-    const buttonHandler = () => {
-        logoutHandler();
-        console.log("Clicked on logout button")
-    }
-    return (
-        <>
-        {
-            userToken !== null  ?
-            <AppScreen buttonHandler={buttonHandler} /> :
-            <AuthScreen />
-        }
-        </>
-    )
-}
 
 const styles = StyleSheet.create({
     container:{
