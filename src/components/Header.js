@@ -1,14 +1,22 @@
-import { View, Text, StyleSheet, Image } from "react-native";
+import { View, Text, StyleSheet, Image, Pressable } from "react-native";
+import {AuthContext} from '../context/auth-context';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import { useContext } from "react";
 
 const Header = () => {
+    const authCtxt = useContext(AuthContext);
+    const logoutHandler = () => {
+        authCtxt.logoutHandler();
+    }
     return (
         <View style={styles.container}>
             <View style={styles.textContainer}>
                 <Text style={styles.title}>Hey Maheen</Text>
                 <Ionicons name="hand-right-outline" color="#a39e14" size={32} />
             </View>
-            <Image  source={require('../../assets/profile.jpg')} style={styles.profileImage}/>
+            <Pressable onPress={() => logoutHandler()}>
+                <Image  source={require('../../assets/profile.jpg')} style={styles.profileImage}/>
+            </Pressable>
         </View>
     )
 }

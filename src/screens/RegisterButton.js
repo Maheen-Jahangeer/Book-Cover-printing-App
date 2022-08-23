@@ -1,11 +1,11 @@
 import { Ionicons } from '@expo/vector-icons';
 import {TextInput} from 'react-native-paper';
-import { View, Text, Image, StyleSheet } from 'react-native';
+import { View, Text, Image, StyleSheet, Alert } from 'react-native';
 import axios from 'axios';
 import AuthButton from '../components/AuthButton';
 import { useState } from 'react';
 
-const RegisterScreen = ({navigation}) => {
+export const RegisterScreen = ({navigation}) => {
     const [userData, setUserData] = useState({
         username:"",
         email:"",
@@ -18,13 +18,12 @@ const RegisterScreen = ({navigation}) => {
         email:userData.email,
         password:userData.password
        }).then((response)=> {
-        console.log(`Registration successfull with response ${JSON.stringify(response)}`)
-        navigation.replace("Home")
-       }).catch(err => console.log("Failed", err))
+        navigation.replace("Login")
+       }).catch(err => Alert.alert("Failed to register, Plase try later"))
     }
 
     const loginHandler = () => {
-        console.log("Login handler")
+        navigation.replace('Login')
     }
     return (
         <View style={styles.container}>

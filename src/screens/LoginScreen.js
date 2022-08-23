@@ -1,21 +1,23 @@
 // import {useContext} from 'react';
 import { useContext, useState } from 'react';
-import { View, Text, StyleSheet, Image, Pressable } from 'react-native';
+import { View, Text, StyleSheet, Image, Pressable, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { ActivityIndicator, TextInput } from 'react-native-paper'
 import AuthButton from '../components/AuthButton';
-import {AuthContext} from '../context/AuthContext';
+// import {AuthContext} from '../context/AuthCon';
+import {AuthContext} from '../context/auth-context';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const LoginScreen = ({ navigation }) => {
+export const LoginScreen = ({ navigation }) => {
+    const authCtxt = useContext(AuthContext);
     const [userData, setUserData] = useState({
         email:"",
         password:""
     });
 
     const registerButtonHandler = () => {
-        navigation.navigate('Register')
+        navigation.replace('Register')
     }
     
     const loginHandler = async() => {
@@ -23,8 +25,8 @@ const LoginScreen = ({ navigation }) => {
             email:userData.email,
             password:userData.password
         }).then((response) => {
-            AsyncStorage.setItem("AccessToken", response.token)
-        }).catch(err => console.log("Failed", err))
+            authCtxt.authHandler(response.data.accessKey);
+        }).catch(err => Alert.alert("Failed to login, Please try again"));
     }
     
     return (
