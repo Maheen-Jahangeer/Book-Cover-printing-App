@@ -25,6 +25,8 @@ export const LoginScreen = ({ navigation }) => {
             email:userData.email,
             password:userData.password
         }).then((response) => {
+            console.log('user response', response)
+            authCtxt.userHandler(response.data.user._id)
             authCtxt.authHandler(response.data.accessKey);
         }).catch(err => Alert.alert("Failed to login, Please try again"));
     }

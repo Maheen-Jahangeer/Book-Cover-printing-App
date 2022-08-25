@@ -15,57 +15,37 @@ import { CoverDetails } from './src/screens/CoverDetailScreen'; 4
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import color from './src/styles/index';
+import { Ionicons } from '@expo/vector-icons';
 import { Cart } from './src/screens/CartScreen';
+import { FavouriteScreen } from './src/screens/FavouriteScreen';
+import { ProfileScreen } from './src/screens/ProfileScreen';
 
 const stack = createNativeStackNavigator();
-
-// export default function App() {
-//   return (
-//     <AuthProvider>
-//       <NavigationContainer>
-//         <stack.Navigator screenOptions={{
-//           contentStyle: { backgroundColor: '#ffffff' },
-//           headerShown: false
-//         }}>
-//           <stack.Screen name='Home' component={HomeScreen} />
-//           <stack.Screen name='Auth' component={AuthScreen} />
-//           <stack.Screen name='Login' component={LoginScreen} />
-//           <stack.Screen name='Register' component={RegisterScreen} />
-
-//         </stack.Navigator>
-//       </NavigationContainer>
-//     </AuthProvider>
-//   )
-// }
-
-const TabScreen = () => {
-  const tab = createBottomTabNavigator();
-  return (
-      <tab.Navigator>
-        <tab.Screen name='Home' options={{tabBarIcon:'home'}} component={AuthenticatedContent} />
-        <tab.Screen name='Cart' component={Cart} />
-      </tab.Navigator>
-  )
-}
 
 const HomeDrawer = () => {
   const drawer = createDrawerNavigator();
   return (
     <drawer.Navigator>
-      <drawer.Screen name='Navigation' component={Navigation} options={{ headerShown: false }} />
+      <drawer.Screen name='Home page' component={HomeScreen} options={{ headerShown: false }} />
+      <drawer.Screen name='Profile' component={ProfileScreen} options={{headerShown:false}} />
     </drawer.Navigator>
   )
 }
 
 const AuthenticatedContent = () => {
+  const tab  = createBottomTabNavigator();
   return (
-    <stack.Navigator>
-      <stack.Screen name='Home' component={HomeDrawer} options={{ headerShown: false }} />
-      <stack.Screen name='CoverDetails' component={CoverDetails} options={{
-        headerTitleAlign: 'center', headerShown: true, headerTitleStyle: { fontSize: 15 }
-      }} />
-      <stack.Screen name='Cart' component={Cart} options={{ headerTitleAlign: 'center', headerShown: true }} />
-    </stack.Navigator>
+    <tab.Navigator screenOptions={{
+      headerStyle:{backgroundColor:color.primaryColor},
+      headerTintColor:'white'
+    }}>
+      <tab.Screen name='Home' component={HomeDrawer} options={{ headerShown: false,
+      tabBarIcon: ({color, size} )=> <Ionicons name='home' color={color} size={size}/>   }} />
+      <tab.Screen name='Cart' component={Cart} options={{ headerTitleAlign: 'center', headerShown: true, tabBarIcon: ({color, size} )=> <Ionicons name='cart' color={color} size={size}/> }} />
+      <tab.Screen name='Favourite' component={FavouriteScreen} options={{ headerShown: false,
+      tabBarIcon: ({color, size} )=> <Ionicons name='heart' color={color} size={size}/> }}  />
+    </tab.Navigator>
   )
 }
 
@@ -113,7 +93,7 @@ const Root = () => {
         <Text>Failed</Text>
       </View>)
   }
-  return <TabScreen />
+  return <Navigation />
 }
 
 export default App = () => {

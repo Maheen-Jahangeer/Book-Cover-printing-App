@@ -1,10 +1,10 @@
 import { View, Text, Pressable, StyleSheet } from 'react-native';
 
-const AuthButton = ({ buttonLabel, onPress, buttonStyle }) => {
+const AuthButton = ({ buttonLabel, onPress, buttonStyle, buttonLabelColor }) => {
     return (
         <View style={[styles.container, buttonStyle && buttonStyle]}>
             <Pressable onPress={onPress} android_ripple>
-                <Text style={styles.label}>{buttonLabel}</Text>
+                <Text style={[styles.label, {color: buttonLabelColor ? buttonLabelColor : 'white'}]}>{buttonLabel}</Text>
             </Pressable>
         </View>
     )

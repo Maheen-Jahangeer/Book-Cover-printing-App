@@ -1,13 +1,34 @@
 import {View, Text, Image, StyleSheet} from 'react-native';
-import {useLayoutEffect} from 'react';
+import {useContext, useEffect, useLayoutEffect, useState} from 'react';
 import {Rating} from 'react-native-ratings';
 import AuthButton from '../components/AuthButton.js';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { bookData } from "../data";
+import axios from 'axios';
+import { AuthContext } from '../context/auth-context.js';
 
 export const CoverDetails = ({route, navigation}) => {
     const coverId = route.params.id;
-    const coverData = bookData.find((coverData) => coverData.id === coverId);
+    // const coverData = bookData.find((coverData) => coverData.id === coverId);
+    console.log('cover id', coverId);
+    const [coverData, setCoverData] = useState({});
+
+    const authCxt = useContext(AuthContext);
+
+    const fetchData = async() => {
+        await axios.get(`http://192.168.0.101:3200/books/find/${coverId}`,{
+            headers:{
+                "verifytoken": `Bearer ${authCxt.token}`
+            }
+        }).then((response)=> setCoverData(response.data))
+        .catch(err => console.error(err))
+    }
+
+    useEffect(()=> {
+        fetchData()
+    },[])
+
+    console.log('response data', coverData);
 
     useLayoutEffect(()=> {
         navigation.setOptions({
@@ -21,7 +42,7 @@ export const CoverDetails = ({route, navigation}) => {
 
     return(
         <View style={styles.container}>
-            <Image source={{uri:coverData.url}} style={styles.image}/>
+            <Image source={{uri:coverData.image}} style={styles.image}/>
             <Text style={styles.title}>
                 {coverData.bookName}
             </Text>
@@ -36,7 +57,7 @@ export const CoverDetails = ({route, navigation}) => {
             </View>
             
             <Text style={styles.description}>
-                {coverData.bookDisciption}
+                {coverData.bookDiscription}
             </Text>
             <View style={styles.ratingContainer} >
                 <Rating imageSize={20} style={styles.rating}/>

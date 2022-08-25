@@ -19,7 +19,9 @@ export const RegisterScreen = ({navigation}) => {
         password:userData.password
        }).then((response)=> {
         navigation.replace("Login")
-       }).catch(err => Alert.alert("Failed to register, Plase try later"))
+       }).catch(err => {
+        console.log("Register failed")
+        Alert.alert("Failed to register, Plase try later")})
     }
 
     const loginHandler = () => {

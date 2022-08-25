@@ -8,7 +8,7 @@ export const BooksItem = ({ bookName, price, url, rating, ratingCount, isSaved =
         <View style={styles.container}>
             <Pressable onPress={onPress}>
                 <View>
-                    <Image style={styles.image} source={{ uri: url }} />
+                    <Image style={styles.image} source={{ uri:"https://firebasestorage.googleapis.com/v0/b/book-cover-printing.appspot.com/o/IMG_20190628_161801.jpg?alt=media&token=e8d02de6-31f4-4d85-af43-7472b1825ec0" }} />
                 </View>
                 <View style={styles.detailContainer}>
                     <Text style={styles.title}>{bookName}</Text>
