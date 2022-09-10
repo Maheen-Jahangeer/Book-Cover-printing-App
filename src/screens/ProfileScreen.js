@@ -1,23 +1,52 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useContext, useEffect, useState } from 'react';
-import { View, Text, StyleSheet, Image, Pressable, TextInput, ScrollView, Modal } from 'react-native';
+import { View, Text, StyleSheet, Image, Pressable, TextInput, ScrollView, Modal, Platform, Alert } from 'react-native';
 import AuthButton from '../components/AuthButton';
 import color from '../styles/index';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
 import { AuthContext } from '../context/auth-context';
+import * as ImagePicker from 'expo-image-picker';
+// import ImagePicker from 'react-native-image-crop-picker';
+// import {launchImageLibrary} from 'react-native-image-picker';
+import storage from '@react-native-firebase/storage';
+
+const options = {
+    title: 'Select Image',
+    type: 'library',
+    options: {
+        maxHeight: 200,
+        maxWidth: 200,
+        selectionLimit: 1,
+        mediaType: 'photo',
+        includeBase64: false
+    }
+}
 
 export const ProfileScreen = ({ navigation }) => {
     const [modalVisible, setModalVisible] = useState(false);
+    const [profileUrl, setProfileUrl] = useState(undefined);
     const authCxt = useContext(AuthContext);
+    const navigate = useNavigation();
     const [user, setUser] = useState({
         username: "",
         email: "",
         address: "",
         pincode: "",
         phoneNumber: "",
+        image: ""
     });
+
+    const openGallery = async() => {
+        let result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.All,
+            allowsEditing: true,
+            aspect: [4, 3],
+            quality: 1,
+        })
+        setUser({...user,image:result.uri});
+    }
 
     const fetchUser = () => {
         AsyncStorage.getItem('user').then(async (response) => {
@@ -31,18 +60,25 @@ export const ProfileScreen = ({ navigation }) => {
                 setUser({ ...user, username: response.data.username });
             }).catch((err) => console.error(err))
         }).catch((error) => console.error(error))
-
-
     }
+
     useEffect(() => {
         fetchUser();
     }, [])
 
-    const navigate = useNavigation();
-
     const upadteHandler = async () => {
+        const uploadUri = user.image;
+        let filename = uploadUri.substring(uploadUri.lastIndexOf('/') + 1);
+        try{
+            await storage().ref(filename).putFile(uploadUri);
+            Alert.alert("Image uploaded", 'Your image uploaded to firebase cloud storage successfully!!')
+        }
+        catch(err){
+            console.error(err)
+        }
         AsyncStorage.getItem('user').then(async (response) => {
             await axios.put(`http://192.168.0.101:3200/user/update/${response}`, {
+                image: filename,
                 username: user.username,
                 email: user.email,
                 address: user.address,
@@ -61,8 +97,8 @@ export const ProfileScreen = ({ navigation }) => {
     return (
         <ScrollView>
             <View style={styles.container}>
-                <Image source={{uri:'https://drive.google.com/file/d/0B552WaqYE3IERmRSTk11bU5FdGdCcUxzNWdNVmJxLUJmYUlF/view?resourcekey=0-Y7FyoVKeKg6vyCDUtXf4qw'}} style={styles.image} />
-                <Pressable style={{ backgroundColor: 'transparent' }} onPress={profilePicHandler} >
+                <Image source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/book-cover-printing.appspot.com/o/IMG_20190628_161801.jpg?alt=media&token=e8d02de6-31f4-4d85-af43-7472b1825ec0' }} style={styles.image} />
+                <Pressable style={{ backgroundColor: 'transparent' }} onPress={openGallery} >
                     <View style={styles.pictureContainer}>
                         <Ionicons name='pencil' />
                         <Text style={styles.title}>
@@ -115,7 +151,7 @@ export const ProfileScreen = ({ navigation }) => {
                                 <View style={styles.modalButtonContainer}>
                                     <AuthButton buttonLabel='Update' buttonStyle={styles.updateButton} />
                                     <AuthButton buttonLabel='Cancel' buttonStyle={styles.modalCancel} buttonLabelColor="black"
-                                    onPress={profilePicHandler} />
+                                        onPress={profilePicHandler} />
                                 </View>
                             </View>
                         </View>
@@ -213,7 +249,7 @@ const styles = StyleSheet.create({
         marginTop: 30
     },
     modalButtonContainer: {
-        marginTop:20,
+        marginTop: 20,
         flexDirection: 'row',
         // justifyContent:'space-between',
         maxWidth: '100%',

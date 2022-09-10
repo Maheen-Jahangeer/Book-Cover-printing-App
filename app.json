@@ -18,14 +18,22 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "book.cover.app"
     },
     "android": {
+      "googleServicesFile": "./helper/book-cover-printing-firebase-adminsdk-be3me-f6944b551b.json",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
-      }
+      },
+      "package": "book.cover.app"
     },
+    "plugins": [
+      "@react-native-firebase/app",
+      "@react-native-firebase/perf",
+      "@react-native-firebase/crashlytics"
+    ],
     "web": {
       "favicon": "./assets/favicon.png"
     }
